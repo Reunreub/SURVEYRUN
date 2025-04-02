@@ -68,22 +68,26 @@
                 age: this.age.value
             };
 
-            fetch('https://survey-run.renrubrubren.workers.dev', { // Use the correct Worker URL
+            fetch('https://survey-run.renrubrubren.workers.dev', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
             })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('response-message').innerText = 'Thank you for your response!';
-                this.reset();
-            })
-            .catch(error => {
-                document.getElementById('response-message').innerText = 'Error submitting form!';
-                console.error('Error:', error);
-            });
+                .then(response => response.json()) // Parse JSON response
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('response-message').innerText = data.message || 'Thank you for your response!';
+                        this.reset();
+                    } else {
+                        document.getElementById('response-message').innerText = data.message || 'Error submitting form!';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('response-message').innerText = 'Error submitting form!';
+                    console.error('Error:', error);
+                });
         });
          // Theme Toggle Logic
         document.getElementById('theme-toggle').addEventListener('change', function(e) {
