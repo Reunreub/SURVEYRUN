@@ -1,111 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survey Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Survey Form</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Simple Survey</h2>
-        <form id="survey-form">
-            <input type="text" name="name" placeholder="Your Name" required>
-            <input type="email" name="email" placeholder="Your Email" required>
-            <input type="number" name="age" placeholder="Your Age" required>
-            <button type="submit">Submit</button>
-        </form>
-        <p id="response-message"></p>
+  <h2>Survey Form</h2>
+  <form id="surveyForm">
+    <label>Name: <input type="text" id="name" required></label><br><br>
+    <label>Age: <input type="number" id="age" required></label><br><br>
+    <label>Gender: 
+      <select id="gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+    </label><br><br>
+    <label>Email: <input type="email" id="email" required></label><br><br>
+    <button type="submit">Submit</button>
+  </form>
 
-        <label>
-            <input type="checkbox" id="theme-toggle">
-            Dark Mode
-        </label>
-    </div>
-    
-    <script>
-        document.getElementById('survey-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Convert form data to JSON
-            const formData = {
-                name: this.name.value,
-                email: this.email.value,
-                age: this.age.value
-            };
-
-            fetch('https://survey-run.renrubrubren.workers.dev', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-                .then(response => response.json()) // Parse JSON response
-                .then(data => {
-                    if (data.status === 'success') {
-                        document.getElementById('response-message').innerText = data.message || 'Thank you for your response!';
-                        this.reset();
-                    } else {
-                        document.getElementById('response-message').innerText = data.message || 'Error submitting form!';
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('response-message').innerText = 'Error submitting form!';
-                    console.error('Error:', error);
-                });
-        });
-         // Theme Toggle Logic
-        document.getElementById('theme-toggle').addEventListener('change', function(e) {
-            const body = document.body;
-            if (e.target.checked) {
-                // Switch to Dark Mode
-                body.style.backgroundColor = '#333';
-                body.style.color = '#fff';
-                document.querySelector('.container').style.backgroundColor = '#444';
-                document.querySelector('.container').style.color = '#fff';
-            } else {
-                // Switch to Light Mode
-                body.style.backgroundColor = '#f4f4f4';
-                body.style.color = '#000';
-                document.querySelector('.container').style.backgroundColor = '#fff';
-                document.querySelector('.container').style.color = '#000';
-            }
-});
-    </script>
+  <script>
+    document.getElementById("surveyForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      
+      // Collect form data
+      let formData = {
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        email: document.getElementById("email").value
+      };
+      
+      // Send data to the Google Apps Script
+      let response = await fetch("https://script.google.com/macros/s/AKfycbyRa6wJCHg2VewNJBFxqmOCsU8Wwo9fJcT0_KK1Q7-5DXGPqwchMyWqUaZIiOuJG8s/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      
+      let result = await response.json();
+      alert(result.message); // Show success message
+    });
+  </script>
 </body>
 </html>
